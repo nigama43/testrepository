@@ -1,0 +1,28 @@
+version: '3.7'
+services:
+    postgres:
+        image: postgres:9.6
+        env_file: config.env
+        logging:
+            options:
+                max-size: 10m
+                max-file: "2"
+        ports:
+            - "5432:5432"
+    airflow:
+        image: apache/airflow:2.3.2
+        restart: always
+        depends_on:
+            - postgres
+        tty: true
+        env_file: config.env
+        logging:
+            options:
+                max-size: 10m
+                max-file: "2"
+        volumes:
+            - ./dags:/opt/airflow/dags
+            - ./plugins:/opt/airflow/plugins
+        ports:
+            - "8080:8080"
+        entrypoint: /bin/bash
